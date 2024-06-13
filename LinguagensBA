@@ -1,0 +1,126 @@
+using System;
+using System.Collections.Generic;
+
+class BingoGame
+{
+    public static void Main()
+    {
+        // Generate the bingo card
+        string[,] bingoCard = GenerateBingoCard();
+        PrintBingoCard(bingoCard);
+
+        // Create the bingo globe
+        BingoGlobe bingoGlobe = new BingoGlobe(75);
+
+        // Draw a number
+        int drawnNumber = bingoGlobe.Draw();
+        Console.WriteLine($"\nNumero sorteado: {drawnNumber}");
+
+        // Check if the drawn number is in the bingo card
+        bool isInCard = IsNumberInBingoCard(bingoCard, drawnNumber);
+        Console.WriteLine(isInCard ? "O numero esta no cartao!" : "O numero nao esta no cartao.");
+    }
+
+    public static string[,] GenerateBingoCard()
+    {
+        string[,] bingoCard = new string[5, 5];
+        FillColumn(bingoCard, 0, 1, 15);
+        FillColumn(bingoCard, 1, 16, 30);
+        FillColumn(bingoCard, 2, 31, 45);
+        bingoCard[2, 2] = " ";  // célula N3 em branco
+        FillColumn(bingoCard, 3, 46, 60);
+        FillColumn(bingoCard, 4, 61, 75);
+        return bingoCard;
+    }
+
+    public static void FillColumn(string[,] card, int column, int min, int max)
+    {
+        HashSet<int> uniqueNumbers = new HashSet<int>();
+        Random rand = new Random();
+
+        for (int row = 0; row < 5; row++)
+        {
+            if (column == 2 && row == 2)
+                continue;
+
+            int number;
+            do
+            {
+                number = rand.Next(min, max + 1);
+            } while (!uniqueNumbers.Add(number));
+
+            card[row, column] = number.ToString();
+        }
+    }
+
+    public static void PrintBingoCard(string[,] card)
+    {
+        Console.WriteLine(" B   I   N   G   O");
+
+        for (int row = 0; row < 5; row++)
+        {
+            for (int column = 0; column < 5; column++)
+            {
+                if (card[row, column] == null)
+                {
+                    Console.Write("    ");
+                }
+                else
+                {
+                    Console.Write($"{card[row, column],-3} ");
+                }
+            }
+            Console.WriteLine();
+        }
+    }
+
+    public static bool IsNumberInBingoCard(string[,] card, int number)
+    {
+        string numberStr = number.ToString();
+        for (int row = 0; row < 5; row++)
+        {
+            for (int column = 0; column < 5; column++)
+            {
+                if (card[row, column] == numberStr)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public class BingoGlobe
+    {
+        private List<int> values;
+        private Random random;
+
+        public BingoGlobe(int maxValue)
+        {
+            values = new List<int>();
+            for (int i = 1; i <= maxValue; i++)
+            {
+                values.Add(i);
+            }
+            random = new Random();
+        }
+
+        public int Draw()
+        {
+            if (values.Count == 0)
+            {
+                throw new InvalidOperationException("No more values to draw.");
+            }
+
+            int index = random.Next(values.Count);
+            int value = values[index];
+            values.RemoveAt(index);
+            return value;
+        }
+
+        public IEnumerable<int> GetValues()
+        {
+            return values;
+        }
+    }
+}
