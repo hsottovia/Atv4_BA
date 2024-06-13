@@ -5,18 +5,14 @@ class BingoGame
 {
     public static void Main()
     {
-        // Generate the bingo card
         string[,] bingoCard = GenerateBingoCard();
         PrintBingoCard(bingoCard);
 
-        // Create the bingo globe
         BingoGlobe bingoGlobe = new BingoGlobe(75);
 
-        // Draw a number
         int drawnNumber = bingoGlobe.Draw();
         Console.WriteLine($"\nNumero sorteado: {drawnNumber}");
 
-        // Check if the drawn number is in the bingo card
         bool isInCard = IsNumberInBingoCard(bingoCard, drawnNumber);
         Console.WriteLine(isInCard ? "O numero esta no cartao!" : "O numero nao esta no cartao.");
     }
@@ -55,7 +51,7 @@ class BingoGame
 
     public static void PrintBingoCard(string[,] card)
     {
-        Console.WriteLine(" B   I   N   G   O");
+        Console.WriteLine("B   I   N   G   O");
 
         for (int row = 0; row < 5; row++)
         {
@@ -109,7 +105,7 @@ class BingoGame
         {
             if (values.Count == 0)
             {
-                throw new InvalidOperationException("No more values to draw.");
+                throw new InvalidOperationException("Nao ha mais valores a serem sorteados.");
             }
 
             int index = random.Next(values.Count);
